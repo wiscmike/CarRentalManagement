@@ -1,0 +1,85 @@
+﻿@page "/customers/"
+@inject HttpClient _httpClient
+@inject IJSRuntime _js
+@attribute [Authorize]
+
+<style>
+    .customer {
+        font-weight: bold;
+        color: #2751d8;
+        align-self: center;
+    }
+
+    h3 {
+        font-weight: bold;
+        font-size: 35px;
+        color: #2a40ee
+    }
+</style>
+
+<IndexPageHeader PageLink="/customers/create" ButtonText="Create New Customer" Title="Car Rental Customers" />
+
+@if (Customers == null)
+{
+    <div class="alert alert-info" Loading Customers...></div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Contact Number</th>
+                <th>Email Address</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Customers)
+            {
+                <tr>
+                    <td class="customer">@customer.FirstName</td>
+                    <td class="customer">@customer.LastName</td>
+                    <td class="customer">@customer.ContactNumber</td>
+                    <td class="customer">@customer.EmailAddress</td>
+                    <td>
+                        <a href="customers/view/@customer.Id" class="btn btn-primary" title="View selected customer">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="customers/edit/@customer.Id" class="btn btn-warning" title="Edit selected customer">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(customer.Id))" title="Delete selected customer">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Customer> Customers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Customers = await _httpClient.GetFromJsonAsync<List<Customer>>(EndPoints.CustomersEndPoint);
+    }
+
+    private async Task Delete(int customerId)
+    {
+        var customer = Customers.FirstOrDefault(m => m.Id == customerId);
+
+        if (customer != null)
+        {
+            var confirm = await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {customer.EmailAddress}?");
+            if (confirm)
+            {
+                await _httpClient.DeleteAsync($"{EndPoints.CustomersEndPoint}/{customerId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+}

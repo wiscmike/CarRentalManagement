@@ -1,14 +1,16 @@
 ﻿using CarRentalManagement.Server.IRepository;
 using CarRentalManagement.Shared.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CarRentalManagement.Server.Controllers
 {
-    ////[Authorize]
-    [Route("[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class VehiclesController : ControllerBase
     {
@@ -23,29 +25,26 @@ namespace CarRentalManagement.Server.Controllers
         [HttpGet]
         public async Task<ActionResult> GetVehicles()
         {
-            var Vehicles = await _unitOfWork.VehiclesRepository.GetAll();
+            List<string> includes = new List<string> { "Make", "Model", "Color" };
 
-            if (Vehicles != null && Vehicles.Any())
-            {
-                return Ok(Vehicles);
-            }
+            var Vehicles = await _unitOfWork.VehiclesRepository.GetAll(includes: includes);
 
-            return NotFound("No Vehicle data found.");
-
+            return Ok(Vehicles);
         }
 
         // GET: /Vehicles/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var Vehicle = await _unitOfWork.VehiclesRepository.Get(m => m.Id == id);
+            List<string> includes = new List<string> { "Make", "Model", "Color" };
+
+            var Vehicle = await _unitOfWork.VehiclesRepository.Get(m => m.Id == id, includes: includes);
 
             if (Vehicle != null)
             {
                 return Ok(Vehicle);
             }
             return NotFound($"Vehicle Id {id} not found.");
-
         }
 
         // PUT: /Vehicles/5

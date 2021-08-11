@@ -2,13 +2,14 @@
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CarRentalManagement.Server.Controllers
 {
     ////[Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class BookingsController : ControllerBase
     {
@@ -23,22 +24,18 @@ namespace CarRentalManagement.Server.Controllers
         [HttpGet]
         public async Task<ActionResult> GetBookings()
         {
-            var Bookings = await _unitOfWork.BookingsRepository.GetAll();
+            List<string> includes = new List<string> { "Vehicle", "Customer" };
+            var Bookings = await _unitOfWork.BookingsRepository.GetAll(includes: includes);
 
-            if (Bookings != null && Bookings.Any())
-            {
-                return Ok(Bookings);
-            }
-
-            return NotFound("No Booking data found.");
-
+            return Ok(Bookings);
         }
 
         // GET: /Bookings/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBooking(int id)
         {
-            var Booking = await _unitOfWork.BookingsRepository.Get(m => m.Id == id);
+            List<string> includes = new List<string> { "Vehicle", "Customer" };
+            var Booking = await _unitOfWork.BookingsRepository.Get(m => m.Id == id, includes: includes);
 
             if (Booking != null)
             {

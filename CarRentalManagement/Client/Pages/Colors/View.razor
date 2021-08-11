@@ -1,0 +1,24 @@
+﻿@page "/colors/view/{id:int}"
+@inject HttpClient _httpClient;
+@inject NavigationManager _navigationManager;
+
+<h3>View Color</h3>
+
+<ColorsComponent color="color" Disabled="true" />
+
+@code {
+
+    [Parameter] public int id { get; set; }
+    Color color = new Color();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        color = await _httpClient.GetFromJsonAsync<Color>($"{EndPoints.ColorsEndPoint}/{id}");
+    }
+
+    private async Task EditColor()
+    {
+        await _httpClient.PutAsJsonAsync($"{EndPoints.ColorsEndPoint}/{id}", color);
+        _navigationManager.NavigateTo("/colors/");
+    }
+}

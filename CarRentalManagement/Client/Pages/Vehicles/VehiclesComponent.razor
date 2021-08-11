@@ -1,0 +1,123 @@
+﻿@inject HttpClient _httpClient
+
+<EditForm Model="@vehicle" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <div class="mainDiv">
+            <fieldset disabled="@Disabled">
+                <div class="form-group">
+                    <label>Make:</label>
+                    <div>
+                        <select @bind="vehicle.MakeId" class="form-control">
+                            @if (Makes != null)
+                            {
+                                <option value="">-- Select Make --</option>
+                                @foreach (var make in Makes)
+                                {
+                                    <option value="@make.Id">@make.Name</option>
+                                }
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => vehicle.MakeId)" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>Model:</label>
+                    <div>
+                        <InputSelect @bind-Value="vehicle.ModelId" class="form-control">
+                            @if (Makes != null)
+                            {
+                                <option value="">-- Select Model --</option>
+                                @foreach (var model in Models)
+                                {
+                                    <option value="@model.Id">@model.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => vehicle.ModelId)" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>Color:</label>
+                    <div>
+                        <select @bind="vehicle.ColorId" class="form-control">
+                            @if (Colors != null)
+                            {
+                                <option value="">-- Select Color --</option>
+                                @foreach (var color in Colors)
+                                {
+                                    <option value="@color.Id">@color.Name</option>
+                                }
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => vehicle.ColorId)" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>Year:</label>
+                    <div>
+                        <InputNumber @bind-Value="@vehicle.Year" class="form-control" />
+                        <ValidationMessage For="@(() => vehicle.Year)" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>License Plate::</label>
+                    <div>
+                        <InputText @bind-Value="@vehicle.LicenseNumber" class="form-control" />
+                        <ValidationMessage For="@(() => vehicle.LicenseNumber)" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>VIN:</label>
+                    <div>
+                        <InputText @bind-Value="@vehicle.VIN" class="form-control" />
+                        <ValidationMessage For="@(() => vehicle.VIN)" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>Daily Rate:</label>
+                    <div>
+                        <InputNumber @bind-Value="@vehicle.RentalRate" class="form-control" />
+                        <ValidationMessage For="@(() => vehicle.RentalRate)" />
+                    </div>
+                </div>
+                <br />
+                <hr />
+            </fieldset>
+            @if (!Disabled)
+            {
+                <button type="submit" class="btn btn-success btn-block" title="@ButtonText">
+                    @ButtonText
+                </button>
+            }
+            <BackToList Target="vehicles" ListName="Vehicles" />
+            <br />
+        </div>
+        <br />
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Vehicle vehicle { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private List<Make> Makes;
+    private List<Model> Models;
+    private List<Color> Colors;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Makes = await _httpClient.GetFromJsonAsync<List<Make>>($"{EndPoints.MakesEndPoint}");
+        Models = await _httpClient.GetFromJsonAsync<List<Model>>($"{EndPoints.ModelsEndPoint}");
+        Colors = await _httpClient.GetFromJsonAsync<List<Color>>($"{EndPoints.ColorsEndPoint}");
+    }
+}

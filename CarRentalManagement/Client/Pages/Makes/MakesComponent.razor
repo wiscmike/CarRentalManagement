@@ -1,0 +1,35 @@
+﻿<EditForm Model="@make" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <div class="mainDiv">
+            <fieldset disabled="@Disabled">
+                <div class="form-group">
+                    <label>Make:</label>
+                    <div>
+                        <InputText @bind-Value="@make.Name" class="form-control" />
+                        <ValidationMessage For="@(() => make.Name)" />
+                    </div>
+                </div>
+                <br />
+                <hr />
+            </fieldset>
+            @if (!Disabled)
+            {
+                <button type="submit" class="btn btn-success btn-block" title="@ButtonText">
+                    @ButtonText
+                </button>
+            }
+            <BackToList Target="makes" ListName="Makes" />
+            <br />
+        </div>
+        <br />
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Make make { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

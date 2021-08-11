@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CarRentalManagement.Server.Controllers
 {
     ////[Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ModelsController : ControllerBase
     {
@@ -24,27 +24,21 @@ namespace CarRentalManagement.Server.Controllers
         public async Task<ActionResult> GetModels()
         {
             var Models = await _unitOfWork.ModelsRepository.GetAll();
-
-            if (Models != null && Models.Any())
-            {
-                return Ok(Models);
-            }
-
-            return NotFound("No Model data found.");
-
+            
+            return Ok(Models);
         }
 
         // GET: /Models/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetModel(int id)
+        [HttpGet("{modelId}")]
+        public async Task<IActionResult> GetModel(int modelId)
         {
-            var Model = await _unitOfWork.ModelsRepository.Get(m => m.Id == id);
+            var Model = await _unitOfWork.ModelsRepository.Get(m => m.Id == modelId);
 
             if (Model != null)
             {
                 return Ok(Model);
             }
-            return NotFound($"Model Id {id} not found.");
+            return NotFound($"Model Id {modelId} not found.");
 
         }
 

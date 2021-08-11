@@ -1,0 +1,79 @@
+﻿@page "/makes/"
+@inject HttpClient _httpClient
+@inject IJSRuntime _js
+@attribute [Authorize]
+
+<style>
+    .make {
+        font-weight: bold;
+        color: #2751d8;
+        align-self: center;
+    }
+
+    h3 {
+        font-weight: bold;
+        font-size: 35px;
+        color: #2a40ee
+    }
+</style>
+
+<IndexPageHeader PageLink="/makes/create" ButtonText="Create New Make" Title="Car Makes" />
+
+@if (Makes == null)
+{
+    <div class="alert alert-info" Loading Makes...></div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var make in Makes)
+            {
+                <tr>
+                    <td class="make">@make.Name</td>
+                    <td>
+                        <a href="makes/view/@make.Id" class="btn btn-primary" title="View selected Make">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="makes/edit/@make.Id" class="btn btn-warning" title="Edit selected Make">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(make.Id))" title="Delete selected Make">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Make> Makes;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Makes = await _httpClient.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
+    }
+
+    private async Task Delete(int makeId)
+    {
+        var make = Makes.FirstOrDefault(m => m.Id == makeId);
+
+        if (make != null)
+        {
+            var confirm = await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {make.Name}?");
+            if (confirm)
+            {
+                await _httpClient.DeleteAsync($"{EndPoints.MakesEndPoint}/{makeId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+}

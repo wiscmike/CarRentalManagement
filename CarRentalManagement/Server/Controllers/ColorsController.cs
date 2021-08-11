@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CarRentalManagement.Server.Controllers
 {
     ////[Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ColorsController : ControllerBase
     {
@@ -25,13 +25,7 @@ namespace CarRentalManagement.Server.Controllers
         {
             var Colors = await _unitOfWork.ColorsRepository.GetAll();
 
-            if (Colors != null && Colors.Any())
-            {
-                return Ok(Colors);
-            }
-
-            return NotFound("No Color data found.");
-
+            return Ok(Colors);
         }
 
         // GET: /Colors/5

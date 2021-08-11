@@ -1,0 +1,24 @@
+﻿@page "/vehicles/view/{id:int}"
+@inject HttpClient _httpClient;
+@inject NavigationManager _navigationManager;
+
+<h3>View Vehicle</h3>
+
+<VehiclesComponent vehicle="vehicle" Disabled="true" />
+
+@code {
+
+    [Parameter] public int id { get; set; }
+    Vehicle vehicle = new Vehicle();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        vehicle = await _httpClient.GetFromJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}/{id}");
+    }
+
+    private async Task EditVehicle()
+    {
+        await _httpClient.PutAsJsonAsync($"{EndPoints.VehiclesEndPoint}/{id}", vehicle);
+        _navigationManager.NavigateTo("/vehicles/");
+    }
+}

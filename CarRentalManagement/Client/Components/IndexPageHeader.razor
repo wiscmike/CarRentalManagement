@@ -1,0 +1,16 @@
+﻿<h3 class="card-title">@Title</h3>
+<hr />
+<br />
+
+<a href=@PageLink class="btn btn-secondary" title=@ButtonText>
+    <span class="oi oi-plus"></span>
+    @ButtonText
+</a>
+<br />
+<br />
+
+@code {
+    [Parameter] public string PageLink { get; set; }
+    [Parameter] public string ButtonText { get; set; }
+    [Parameter] public string Title { get; set; }
+}

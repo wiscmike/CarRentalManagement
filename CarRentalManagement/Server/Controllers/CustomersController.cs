@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CarRentalManagement.Server.Controllers
 {
     ////[Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
@@ -25,13 +25,7 @@ namespace CarRentalManagement.Server.Controllers
         {
             var Customers = await _unitOfWork.CustomersRepository.GetAll();
 
-            if (Customers != null && Customers.Any())
-            {
-                return Ok(Customers);
-            }
-
-            return NotFound("No Customer data found.");
-
+            return Ok(Customers);
         }
 
         // GET: /Customers/5

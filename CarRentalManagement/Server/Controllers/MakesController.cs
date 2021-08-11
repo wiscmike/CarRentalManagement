@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CarRentalManagement.Server.Controllers
 {
     ////[Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class MakesController : ControllerBase
     {
@@ -25,26 +25,20 @@ namespace CarRentalManagement.Server.Controllers
         {
             var makes = await _unitOfWork.MakesRepository.GetAll();
 
-            if (makes != null && makes.Any())
-            {
-                return Ok(makes);
-            }
-            
-            return NotFound("No Make data found.");
-            
+            return Ok(makes);
         }
 
         // GET: /Makes/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetMake(int id)
+        [HttpGet("{makeId}")]
+        public async Task<IActionResult> GetMake(int makeId)
         {
-            var make = await _unitOfWork.MakesRepository.Get(m => m.Id == id);
+            var make = await _unitOfWork.MakesRepository.Get(m => m.Id == makeId);
 
             if (make != null)
             {
                 return Ok(make);
             }
-            return NotFound($"Make Id {id} not found.");
+            return NotFound($"Make Id {makeId} not found.");
             
         }
 

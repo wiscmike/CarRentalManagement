@@ -1,0 +1,25 @@
+﻿@page "/bookings/view/{id:int}"
+@inject HttpClient _httpClient;
+@inject NavigationManager _navigationManager;
+
+<h3>View Booking</h3>
+
+<BookingsComponent booking="booking" Disabled="true" />
+
+@code {
+
+    [Parameter] public int id { get; set; }
+    Booking booking = new Booking();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        booking = await _httpClient.GetFromJsonAsync<Booking>($"{EndPoints.BookingsEndPoint}/{id}");
+    }
+
+    private async Task EditBooking()
+    {
+        await _httpClient.PutAsJsonAsync($"{EndPoints.BookingsEndPoint}/{id}", booking);
+        _navigationManager.NavigateTo("/bookings/");
+    }
+}
+

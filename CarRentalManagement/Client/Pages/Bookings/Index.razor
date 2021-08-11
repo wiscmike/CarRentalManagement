@@ -1,0 +1,109 @@
+﻿@page "/bookings/"
+@inject HttpClient _httpClient
+@inject IJSRuntime _js
+@attribute [Authorize]
+
+<style>
+    .booking {
+        font-weight: bold;
+        color: #2751d8;
+        align-self: center;
+    }
+
+    h3 {
+        font-weight: bold;
+        font-size: 35px;
+        color: #2a40ee
+    }
+</style>
+
+<IndexPageHeader PageLink="/bookings/create" ButtonText="Create New Booking" Title="Car Bookings" />
+
+@if (Bookings == null)
+{
+    <div class="alert alert-info" Loading Bookings...></div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Customer Number</th>
+                <th>Customer FirstName</th>
+                <th>Customer LastName</th>
+                <th>Customer Email</th>
+                <th>Vehicle</th>
+                <th>Date Created</th>
+                <th>Duration (days)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Bookings)
+            {
+            <tr>
+                <td class="booking">@booking.Customer.TaxId</td>
+                <td class="booking">@booking.Customer.FirstName</td>
+                <td class="booking">@booking.Customer.LastName</td>
+                <td class="booking">@booking.Customer.EmailAddress</td>
+                <td class="booking">@booking.Vehicle.Make.Name @booking.Vehicle.Model.Name</td>
+                <td class="booking">@booking.DateCreated.Date.ToString("MMMM dd, yyyy")</td>
+                @if (booking.DateIn != null)
+                {
+                    <td class="booking">@(((DateTime)booking.DateIn - booking.DateOut).TotalDays.ToString());)</td>
+                }
+                else
+                {
+                    <td class="booking">N/A</td>
+                }
+                <td>
+                    <a href="bookings/view/@booking.Id" class="btn btn-primary" title="View selected booking">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="bookings/edit/@booking.Id" class="btn btn-warning" title="Edit selected booking">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete(booking.Id))" title="Delete selected booking">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Booking> Bookings;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Make make;
+        Model model;
+
+        Bookings = await _httpClient.GetFromJsonAsync<List<Booking>>(EndPoints.BookingsEndPoint);
+
+        foreach (var booking in Bookings)
+        {
+            make = await _httpClient.GetFromJsonAsync<Make>($"{EndPoints.MakesEndPoint}/{booking.Vehicle.MakeId}");
+            booking.Vehicle.Make = make;
+            model = await _httpClient.GetFromJsonAsync<Model>($"{EndPoints.ModelsEndPoint}/{booking.Vehicle.ModelId}");
+            booking.Vehicle.Model = model;
+        }
+    }
+
+    private async Task Delete(int bookingId)
+    {
+        var booking = Bookings.FirstOrDefault(m => m.Id == bookingId);
+
+        if (booking != null)
+        {
+            var confirm = await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {booking.Customer}?");
+            if (confirm)
+            {
+                await _httpClient.DeleteAsync($"{EndPoints.BookingsEndPoint}/{bookingId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+}
