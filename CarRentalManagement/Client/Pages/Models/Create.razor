@@ -1,18 +1,7 @@
 ﻿@page "/models/create/"
-@inject HttpClient _httpClient
-@inject NavigationManager _navigationManager
 @attribute [Authorize]
 
 <TitleComponent Title="Create New Model" />
 
 <ModelsComponent ButtonText="Create Model" model="model" OnValidSubmit="@CreateModel" />
 
-@code {
-    private Model model = new Model();
-
-    private async Task CreateModel()
-    {
-        await _httpClient.PostAsJsonAsync<Model>(EndPoints.ModelsEndPoint, model);
-        _navigationManager.NavigateTo("/models/");
-    }
-}

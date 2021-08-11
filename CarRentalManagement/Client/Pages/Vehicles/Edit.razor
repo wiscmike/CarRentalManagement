@@ -1,24 +1,6 @@
 ﻿@page "/vehicles/edit/{id:int}"
-@inject HttpClient _httpClient;
-@inject NavigationManager _navigationManager;
+@attribute [Authorize]
 
 <TitleComponent Title="Edit Vehicle" />
 
 <VehiclesComponent ButtonText="Update Vehicle" OnValidSubmit="@EditVehicle" vehicle="vehicle" />
-
-@code {
-
-    [Parameter] public int id { get; set; }
-    Vehicle vehicle = new Vehicle();
-
-    protected async override Task OnParametersSetAsync()
-    {
-        vehicle = await _httpClient.GetFromJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}/{id}");
-    }
-
-    private async Task EditVehicle()
-    {
-        await _httpClient.PutAsJsonAsync($"{EndPoints.VehiclesEndPoint}/{id}", vehicle);
-        _navigationManager.NavigateTo("/vehicles/");
-    }
-}

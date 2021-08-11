@@ -1,6 +1,4 @@
 ﻿@page "/makes/"
-@inject HttpClient _httpClient
-@inject IJSRuntime _js
 @attribute [Authorize]
 
 <style>
@@ -52,28 +50,4 @@ else
             }
         </tbody>
     </table>
-}
-
-@code {
-    private List<Make> Makes;
-
-    protected async override Task OnInitializedAsync()
-    {
-        Makes = await _httpClient.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
-    }
-
-    private async Task Delete(int makeId)
-    {
-        var make = Makes.FirstOrDefault(m => m.Id == makeId);
-
-        if (make != null)
-        {
-            var confirm = await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {make.Name}?");
-            if (confirm)
-            {
-                await _httpClient.DeleteAsync($"{EndPoints.MakesEndPoint}/{makeId}");
-                await OnInitializedAsync();
-            }
-        }
-    }
 }

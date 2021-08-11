@@ -1,24 +1,6 @@
 ﻿@page "/models/view/{id:int}"
-@inject HttpClient _httpClient;
-@inject NavigationManager _navigationManager;
+@attribute [Authorize]
 
 <TitleComponent Title="View Model" />
 
 <ModelsComponent model="model" Disabled="true" />
-
-@code {
-
-    [Parameter] public int id { get; set; }
-    Model model = new Model();
-
-    protected async override Task OnParametersSetAsync()
-    {
-        model = await _httpClient.GetFromJsonAsync<Model>($"{EndPoints.ModelsEndPoint}/{id}");
-    }
-
-    private async Task EditModel()
-    {
-        await _httpClient.PutAsJsonAsync($"{EndPoints.ModelsEndPoint}/{id}", model);
-        _navigationManager.NavigateTo("/models/");
-    }
-}

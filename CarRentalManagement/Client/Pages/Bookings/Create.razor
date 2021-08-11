@@ -7,15 +7,3 @@
 
 <BookingsComponent booking="booking" ButtonText="Create Vehicle" OnValidSubmit="@CreateBooking" />
 
-@code {
-    private Booking booking = new Booking()
-    {
-        DateOut = DateTime.Now.Date
-    };
-
-    private async Task CreateBooking()
-    {
-        await _httpClient.PostAsJsonAsync<Booking>(EndPoints.BookingsEndPoint, booking);
-        _navigationManager.NavigateTo("/bookings/");
-    }
-}

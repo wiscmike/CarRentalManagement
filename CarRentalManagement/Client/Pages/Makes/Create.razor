@@ -1,18 +1,6 @@
 ﻿@page "/makes/create/"
-@inject HttpClient _httpClient
-@inject NavigationManager _navigationManager
 @attribute [Authorize]
 
 <TitleComponent Title="Create New Make" />
 
 <MakesComponent ButtonText="Create Make" make="make" OnValidSubmit="@CreateMake" />
-
-@code {
-    private Make make = new Make();
-
-    private async Task CreateMake()
-    {
-        await _httpClient.PostAsJsonAsync<Make>(EndPoints.MakesEndPoint, make);
-        _navigationManager.NavigateTo("/makes/");
-    }
-}

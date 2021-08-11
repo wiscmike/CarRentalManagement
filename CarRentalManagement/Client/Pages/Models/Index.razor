@@ -1,6 +1,4 @@
 ﻿@page "/models/"
-@inject HttpClient _httpClient
-@inject IJSRuntime _js
 @attribute [Authorize]
 
 <style>
@@ -52,28 +50,4 @@ else
             }
         </tbody>
     </table>
-}
-
-@code {
-    private List<Model> Models;
-
-    protected async override Task OnInitializedAsync()
-    {
-        Models = await _httpClient.GetFromJsonAsync<List<Model>>(EndPoints.ModelsEndPoint);
-    }
-
-    private async Task Delete(int modelId)
-    {
-        var model = Models.FirstOrDefault(m => m.Id == modelId);
-
-        if (model != null)
-        {
-            var confirm = await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {model.Name}?");
-            if (confirm)
-            {
-                await _httpClient.DeleteAsync($"{EndPoints.ModelsEndPoint}/{modelId}");
-                await OnInitializedAsync();
-            }
-        }
-    }
 }

@@ -1,18 +1,7 @@
 ﻿@page "/colors/create/"
-@inject HttpClient _httpClient
-@inject NavigationManager _navigationManager
 @attribute [Authorize]
 
 <TitleComponent Title="Create New Color" />
 
-<ColorsComponent color="color" OnValidSubmit="@CreateColor" ButtonText="Create Color" />
+<ColorsComponent color="color" OnValidSubmit="CreateColor" ButtonText="Create Color" />
 
-@code {
-    private Color color = new Color();
-
-    private async Task CreateColor()
-    {
-        await _httpClient.PostAsJsonAsync<Color>(EndPoints.ColorsEndPoint, color);
-        _navigationManager.NavigateTo("/colors/");
-    }
-}

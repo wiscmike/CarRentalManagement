@@ -1,29 +1,6 @@
 ﻿@page "/vehicles/create/"
-@inject HttpClient _httpClient
-@inject NavigationManager _navigationManager
 @attribute [Authorize]
 
 <TitleComponent Title="Create New Vehicle" />
 
 <VehiclesComponent vehicle="vehicle" ButtonText="Create Vehicle" OnValidSubmit="@CreateVehicle" />
-
-@code {
-    private Vehicle vehicle = new Vehicle();
-
-    private List<Make> Makes;
-    private List<Model> Models;
-    private List<Color> Colors;
-
-    protected async override Task OnInitializedAsync()
-    {
-        Makes = await _httpClient.GetFromJsonAsync<List<Make>>($"{EndPoints.MakesEndPoint}");
-        Models = await _httpClient.GetFromJsonAsync<List<Model>>($"{EndPoints.ModelsEndPoint}");
-        Colors = await _httpClient.GetFromJsonAsync<List<Color>>($"{EndPoints.ColorsEndPoint}");
-    }
-
-    private async Task CreateVehicle()
-    {
-        await _httpClient.PostAsJsonAsync<Vehicle>(EndPoints.VehiclesEndPoint, vehicle);
-        _navigationManager.NavigateTo("/vehicles/");
-    }
-}

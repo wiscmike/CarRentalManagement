@@ -1,24 +1,6 @@
 ﻿@page "/colors/edit/{id:int}"
-@inject HttpClient _httpClient;
-@inject NavigationManager _navigationManager;
+@attribute [Authorize]
 
 <TitleComponent Title="Edit Color" />
 
 <ColorsComponent ButtonText="Update Color" OnValidSubmit="@EditColor" color="color" />
-
-@code {
-
-    [Parameter] public int id { get; set; }
-    Color color = new Color();
-
-    protected async override Task OnParametersSetAsync()
-    {
-        color = await _httpClient.GetFromJsonAsync<Color>($"{EndPoints.ColorsEndPoint}/{id}");
-    }
-
-    private async Task EditColor()
-    {
-        await _httpClient.PutAsJsonAsync($"{EndPoints.ColorsEndPoint}/{id}", color);
-        _navigationManager.NavigateTo("/colors/");
-    }
-}
