@@ -3,9 +3,7 @@
 @inject NavigationManager _navigationManager
 @attribute [Authorize]
 
-<h3 class="card-title">Create New Model</h3>
-<hr />
-<br />
+<TitleComponent Title="Create New Model" />
 
 <ModelsComponent ButtonText="Create Model" model="model" OnValidSubmit="@CreateModel" />
 
