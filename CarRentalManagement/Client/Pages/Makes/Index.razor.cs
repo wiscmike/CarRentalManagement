@@ -1,4 +1,5 @@
-﻿using CarRentalManagement.Client.Static;
+﻿using CarRentalManagement.Client.Services;
+using CarRentalManagement.Client.Static;
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalManagement.Client.Pages.Makes
 {
-    public partial class Index
+    public partial class Index : IDisposable
     {
         [Inject]
         private HttpClient HttpClient { get; set; }
@@ -19,10 +20,14 @@ namespace CarRentalManagement.Client.Pages.Makes
         [Inject]
         private IJSRuntime JS { get; set; }
 
+        [Inject]
+        private HttpClientInterceptorService clientInterceptorService { get; set; }
+
         private List<Make> Makes;
 
         protected async override Task OnInitializedAsync()
         {
+            clientInterceptorService.MonitorEvent();
             Makes = await HttpClient.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
         }
 
@@ -35,10 +40,18 @@ namespace CarRentalManagement.Client.Pages.Makes
                 var confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {make.Name}?");
                 if (confirm)
                 {
-                    await HttpClient.DeleteAsync($"{EndPoints.MakesEndPoint}/{makeId}");
-                    await OnInitializedAsync();
+                    var result = await HttpClient.DeleteAsync($"{EndPoints.MakesEndPoint}/{makeId}");
+                    if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        await OnInitializedAsync();
+                    }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            clientInterceptorService.DisposeMonitorEvent();
         }
     }
 }

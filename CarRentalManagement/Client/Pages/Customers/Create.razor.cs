@@ -1,26 +1,40 @@
-﻿using CarRentalManagement.Client.Static;
+﻿using CarRentalManagement.Client.Services;
+using CarRentalManagement.Client.Static;
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace CarRentalManagement.Client.Pages.Customers
 {
-    public partial class Create
+    public partial class Create : IDisposable
     {
         [Inject]
         private HttpClient HttpClient { get; set; }
 
         [Inject]
         private NavigationManager NavigationManager { get; set; }
+        
+        [Inject]
+        private HttpClientInterceptorService clientInterceptorService { get; set; }
 
         private Customer customer = new Customer();
 
         private async Task CreateCustomer()
         {
-            await HttpClient.PostAsJsonAsync<Customer>(EndPoints.CustomersEndPoint, customer);
-            NavigationManager.NavigateTo("/customers/");
+            clientInterceptorService.MonitorEvent();
+            var result = await HttpClient.PostAsJsonAsync<Customer>(EndPoints.CustomersEndPoint, customer);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                NavigationManager.NavigateTo("/customers/");
+            }
+        }
+
+        public void Dispose()
+        {
+            clientInterceptorService.DisposeMonitorEvent();
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using CarRentalManagement.Client.Static;
+﻿using CarRentalManagement.Client.Services;
+using CarRentalManagement.Client.Static;
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalManagement.Client.Pages.Models
 {
-    public partial class Index
+    public partial class Index : IDisposable
     {
         [Inject]
         private HttpClient HttpClient { get; set; }
@@ -18,10 +20,14 @@ namespace CarRentalManagement.Client.Pages.Models
         [Inject]
         private IJSRuntime JS { get; set; }
 
+        [Inject]
+        private HttpClientInterceptorService clientInterceptorService { get; set; }
+
         private List<Model> Models;
 
         protected async override Task OnInitializedAsync()
         {
+            clientInterceptorService.MonitorEvent();
             Models = await HttpClient.GetFromJsonAsync<List<Model>>(EndPoints.ModelsEndPoint);
         }
 
@@ -34,10 +40,18 @@ namespace CarRentalManagement.Client.Pages.Models
                 var confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {model.Name}?");
                 if (confirm)
                 {
-                    await HttpClient.DeleteAsync($"{EndPoints.ModelsEndPoint}/{modelId}");
-                    await OnInitializedAsync();
+                    var result = await HttpClient.DeleteAsync($"{EndPoints.ModelsEndPoint}/{modelId}");
+                    if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        await OnInitializedAsync();
+                    }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            clientInterceptorService.DisposeMonitorEvent();
         }
     }
 }
