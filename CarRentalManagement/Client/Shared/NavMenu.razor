@@ -1,91 +1,109 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Car Rental Management</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+ 
+    <div class="top-row pl-4 navbar navbar-dark">
+        <a class="navbar-brand" href="">Car Rental Management</a>
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <AuthorizeView>
-        <Authorized>
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item px-1">
+                    <NavLink class="nav-link" href="authentication/profile" Match="NavLinkMatch.All">
+                        <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity.Name
+                    </NavLink>
+                </li>
+                <li class="nav-item px-1">
+                    <NavLink class="nav-link" href="#" @onclick="@BeginSignOut" Match="NavLinkMatch.All">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Log out
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item px-1">
+                    <NavLink class="nav-link" href="authentication/register" Match="NavLinkMatch.All">
+                        <span class="oi oi-person" aria-hidden="true"></span> Register
+                    </NavLink>
+                </li>
+                <li class="nav-item px-1">
+                    <NavLink class="nav-link" href="authentication/login" Match="NavLinkMatch.All">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Log In
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+        <hr class="menu-hr" />
+        <ul class="nav flex-column">
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="authentication/profile" Match="NavLinkMatch.All">
-                    <span class="oi oi-person" aria-hidden="true"></span> Hello, @context.User.Identity.Name!
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
                 </NavLink>
             </li>
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="authentication/logout" Match="NavLinkMatch.All">
-                    <span class="oi oi-account-logout" aria-hidden="true"></span> Log out
-                </NavLink>
-            </li>
-        </Authorized>
-        <NotAuthorized>
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="authentication/register" Match="NavLinkMatch.All">
-                    <span class="oi oi-person" aria-hidden="true"></span> Register
+                <NavLink class="nav-link" href="makes/">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Makes
                 </NavLink>
             </li>
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="authentication/login" Match="NavLinkMatch.All">
-                    <span class="oi oi-account-login" aria-hidden="true"></span> Log In
+                <NavLink class="nav-link" href="models/">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Models
                 </NavLink>
             </li>
-        </NotAuthorized>
-    </AuthorizeView>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="colors/">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Colors
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="vehicles/">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Vehicles
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="customers/">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Customers
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="bookings/">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Bookings
+                </NavLink>
+            </li>
+        </ul>
+    </div>
 
-    <ul class="nav flex-column">
-        @*<LoginDisplay />*@
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
+    @code {
+        private bool collapseNavMenu = true;
 
-        @*<li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>*@
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="makes/">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Makes
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="models/">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Models
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="colors/">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Colors
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="vehicles/">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Vehicles
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="customers/">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Customers
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="bookings/">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Bookings
-            </NavLink>
-        </li>
-    </ul>
-</div>
+        private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-@code {
-    private bool collapseNavMenu = true;
+        private void ToggleNavMenu()
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+        private async Task BeginSignOut(MouseEventArgs args)
+        {
+            string logSnippet = "[LoginDisplay][BeginSignOut] =>";
+            Console.WriteLine($"{logSnippet} SignOutManager.SetSignOutState()");
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
+            try
+            {
+                await SignOutManager.SetSignOutState();
+            }
+            catch (Exception exc)
+            {
+
+                Console.WriteLine(exc.Message);
+                Console.WriteLine(exc.StackTrace);
+            }
+
+            Console.WriteLine($"{logSnippet} Returning from SignOutManager.SetSignOutState()");
+
+
+            Navigation.NavigateTo("authentication/logout");
+        } }
     }
-}

@@ -31,6 +31,11 @@ namespace CarRentalManagement.Client.Pages.Makes
             Makes = await HttpClient.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await JS.InvokeVoidAsync("AddDataTable", "#makesTable");
+        }
+
         private async Task Delete(int makeId)
         {
             var make = Makes.FirstOrDefault(m => m.Id == makeId);
@@ -51,6 +56,7 @@ namespace CarRentalManagement.Client.Pages.Makes
 
         public void Dispose()
         {
+            JS.InvokeVoidAsync("DisposeDataTable", "#makesTable");
             clientInterceptorService.DisposeMonitorEvent();
         }
     }

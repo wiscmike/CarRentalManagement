@@ -42,6 +42,11 @@ namespace CarRentalManagement.Client.Pages.Bookings
             }
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await JS.InvokeVoidAsync("AddDataTable", "#bookingsTable");
+        }
+
         private async Task Delete(int bookingId)
         {
             var booking = Bookings.FirstOrDefault(m => m.Id == bookingId);
@@ -63,6 +68,7 @@ namespace CarRentalManagement.Client.Pages.Bookings
         public void Dispose()
         {
             clientInterceptorService.DisposeMonitorEvent();
+            JS.InvokeVoidAsync("DisposeDataTable", "#bookingsTable");
         }
     }
 }

@@ -31,6 +31,11 @@ namespace CarRentalManagement.Client.Pages.Colors
             Colors = await HttpClient.GetFromJsonAsync<List<Color>>(EndPoints.ColorsEndPoint);
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await JS.InvokeVoidAsync("AddDataTable", "#colorsTable");
+        }
+
         private async Task Delete(int colorId)
         {
             var color = Colors.FirstOrDefault(m => m.Id == colorId);
@@ -51,6 +56,7 @@ namespace CarRentalManagement.Client.Pages.Colors
 
         public void Dispose()
         {
+            JS.InvokeVoidAsync("DisposeDataTable", "#colorsTable");
             clientInterceptorService.DisposeMonitorEvent();
         }
     }

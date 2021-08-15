@@ -32,6 +32,11 @@ namespace CarRentalManagement.Client.Pages.Customers
             Customers = await HttpClient.GetFromJsonAsync<List<Customer>>(EndPoints.CustomersEndPoint);
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await JS.InvokeVoidAsync("AddDataTable", "#customersTable");
+        }
+
         private async Task Delete(int customerId)
         {
             var customer = Customers.FirstOrDefault(m => m.Id == customerId);
@@ -52,6 +57,7 @@ namespace CarRentalManagement.Client.Pages.Customers
 
         public void Dispose()
         {
+            JS.InvokeVoidAsync("DisposeDataTable", "#customersTable");
             clientInterceptorService.DisposeMonitorEvent();
         }
     }
