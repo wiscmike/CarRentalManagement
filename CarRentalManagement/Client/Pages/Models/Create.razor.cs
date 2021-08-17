@@ -26,11 +26,8 @@ namespace CarRentalManagement.Client.Pages.Models
         {
             clientInterceptorService.MonitorEvent();
 
-            var result = await HttpClient.PostAsJsonAsync<Model>(EndPoints.ModelsEndPoint, model);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/models/");
-            }
+            await HttpClient.PostAsJsonAsync<Model>(EndPoints.ModelsEndPoint, model);
+            NavigationManager.NavigateTo("/models/");
         }
 
         public void Dispose()

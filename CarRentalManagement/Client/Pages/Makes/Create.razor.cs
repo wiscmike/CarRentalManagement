@@ -25,11 +25,8 @@ namespace CarRentalManagement.Client.Pages.Makes
         private async Task CreateMake()
         {
             clientInterceptorService.MonitorEvent();
-            var result = await HttpClient.PostAsJsonAsync<Make>(EndPoints.MakesEndPoint, make);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/makes/");
-            }
+            await HttpClient.PostAsJsonAsync<Make>(EndPoints.MakesEndPoint, make);
+            NavigationManager.NavigateTo("/makes/");
         }
 
         public void Dispose()

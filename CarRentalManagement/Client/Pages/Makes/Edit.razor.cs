@@ -20,7 +20,6 @@ namespace CarRentalManagement.Client.Pages.Makes
         [Inject]
         private HttpClientInterceptorService clientInterceptorService { get; set; }
 
-
         [Parameter]
         public int Id { get; set; }
 
@@ -34,11 +33,8 @@ namespace CarRentalManagement.Client.Pages.Makes
 
         private async Task EditMake()
         {
-            var result = await HttpClient.PutAsJsonAsync($"{EndPoints.MakesEndPoint}/{Id}", make);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/makes/");
-            }
+            await HttpClient.PutAsJsonAsync($"{EndPoints.MakesEndPoint}/{Id}", make);
+            NavigationManager.NavigateTo("/makes/");
         }
 
         public void Dispose()

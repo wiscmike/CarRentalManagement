@@ -45,11 +45,8 @@ namespace CarRentalManagement.Client.Pages.Makes
                 var confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {make.Name}?");
                 if (confirm)
                 {
-                    var result = await HttpClient.DeleteAsync($"{EndPoints.MakesEndPoint}/{makeId}");
-                    if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-                    {
-                        await OnInitializedAsync();
-                    }
+                    await HttpClient.DeleteAsync($"{EndPoints.MakesEndPoint}/{makeId}");
+                    await OnInitializedAsync();
                 }
             }
         }

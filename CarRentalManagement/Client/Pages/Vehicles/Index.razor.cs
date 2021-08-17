@@ -46,11 +46,8 @@ namespace CarRentalManagement.Client.Pages.Vehicles
                 var confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the {vehicle.Make.Name} {vehicle.Model.Name}?");
                 if (confirm)
                 {
-                    var result = await HttpClient.DeleteAsync($"{EndPoints.VehiclesEndPoint}/{vehicleId}");
-                    if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-                    {
-                        await OnInitializedAsync();
-                    }
+                    await HttpClient.DeleteAsync($"{EndPoints.VehiclesEndPoint}/{vehicleId}");
+                    await OnInitializedAsync();
                 }
             }
         }

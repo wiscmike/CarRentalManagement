@@ -34,11 +34,8 @@ namespace CarRentalManagement.Client.Pages.Customers
 
         private async Task EditCustomer()
         {
-            var result = await HttpClient.PutAsJsonAsync($"{EndPoints.CustomersEndPoint}/{Id}", customer);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/customers/");
-            }
+            await HttpClient.PutAsJsonAsync($"{EndPoints.CustomersEndPoint}/{Id}", customer);
+            NavigationManager.NavigateTo("/customers/");
         }
 
         public void Dispose()

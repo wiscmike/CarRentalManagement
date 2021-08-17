@@ -1,10 +1,12 @@
 ﻿using CarRentalManagement.Server.IRepository;
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CarRentalManagement.Server.Controllers
@@ -15,10 +17,16 @@ namespace CarRentalManagement.Server.Controllers
     public class VehiclesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public VehiclesController(IUnitOfWork unitOfWork)
+        public VehiclesController(IUnitOfWork unitOfWork, 
+                                    IWebHostEnvironment webHostEnvironment,
+                                    IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: /Vehicles
@@ -57,6 +65,12 @@ namespace CarRentalManagement.Server.Controllers
                 return BadRequest();
             }
 
+
+            if (Vehicle.VehicleImage != null)
+            {
+                Vehicle.VehicleImageName = CreateImageFile(Vehicle);
+            }
+
             _unitOfWork.VehiclesRepository.Update(Vehicle);
 
             try
@@ -83,6 +97,11 @@ namespace CarRentalManagement.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle Vehicle)
         {
+            if (Vehicle.VehicleImage != null)
+            {
+                Vehicle.VehicleImageName = CreateImageFile(Vehicle);
+            }
+
             await _unitOfWork.VehiclesRepository.Insert(Vehicle);
             await _unitOfWork.Save(HttpContext);
 
@@ -110,6 +129,25 @@ namespace CarRentalManagement.Server.Controllers
             var Vehicle = await _unitOfWork.VehiclesRepository.Get(m => m.Id == id);
 
             return Vehicle != null;
+        }
+
+        private string CreateImageFile(Vehicle vehicle)
+        {
+            var url = _httpContextAccessor.HttpContext.Request.Host.Value;
+            var path = $"{_webHostEnvironment.WebRootPath}\\uploads\\{vehicle.VehicleImageName}";
+
+            try
+            {
+                var fileStream = System.IO.File.Create(path);
+                fileStream.Write(vehicle.VehicleImage, 0, vehicle.VehicleImage.Length);
+                fileStream.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return $"https://{url}/uploads/{vehicle.VehicleImageName}";
         }
     }
 }

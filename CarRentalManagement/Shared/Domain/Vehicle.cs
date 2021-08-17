@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarRentalManagement.Shared.Domain
 {
@@ -33,5 +34,10 @@ namespace CarRentalManagement.Shared.Domain
         public double RentalRate { get; set; }
 
         public virtual List<Booking> Bookings { get; set; }
+
+        [NotMapped]
+        public byte[] VehicleImage { get; set; }
+
+        public string VehicleImageName { get; set; }
     }
 }

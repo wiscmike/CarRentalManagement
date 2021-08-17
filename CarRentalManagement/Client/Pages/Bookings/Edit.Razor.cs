@@ -33,11 +33,8 @@ namespace CarRentalManagement.Client.Pages.Bookings
 
         private async Task EditBooking()
         {
-            var result = await HttpClient.PutAsJsonAsync($"{EndPoints.BookingsEndPoint}/{Id}", booking);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/bookings/");
-            }
+            await HttpClient.PutAsJsonAsync($"{EndPoints.BookingsEndPoint}/{Id}", booking);
+            NavigationManager.NavigateTo("/bookings/");
         }
 
         public void Dispose()

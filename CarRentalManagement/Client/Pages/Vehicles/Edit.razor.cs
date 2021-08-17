@@ -33,11 +33,8 @@ namespace CarRentalManagement.Client.Pages.Vehicles
 
         private async Task EditVehicle()
         {
-            var result = await HttpClient.PutAsJsonAsync($"{EndPoints.VehiclesEndPoint}/{Id}", vehicle);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/vehicles/");
-            }
+            await HttpClient.PutAsJsonAsync($"{EndPoints.VehiclesEndPoint}/{Id}", vehicle);
+            NavigationManager.NavigateTo("/vehicles/");
         }
 
         public void Dispose()

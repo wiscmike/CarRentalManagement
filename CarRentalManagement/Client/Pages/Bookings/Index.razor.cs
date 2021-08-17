@@ -56,11 +56,8 @@ namespace CarRentalManagement.Client.Pages.Bookings
                 var confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the selected booking?");
                 if (confirm)
                 {
-                    var result = await HttpClient.DeleteAsync($"{EndPoints.BookingsEndPoint}/{bookingId}");
-                    if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-                    {
-                        await OnInitializedAsync();
-                    }
+                    await HttpClient.DeleteAsync($"{EndPoints.BookingsEndPoint}/{bookingId}");
+                    await OnInitializedAsync();
                 }
             }
         }

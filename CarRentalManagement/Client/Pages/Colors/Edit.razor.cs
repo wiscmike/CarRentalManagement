@@ -33,11 +33,8 @@ namespace CarRentalManagement.Client.Pages.Colors
 
         private async Task EditColor()
         {
-            var result = await HttpClient.PutAsJsonAsync($"{EndPoints.ColorsEndPoint}/{Id}", color);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/colors/");
-            }
+            await HttpClient.PutAsJsonAsync($"{EndPoints.ColorsEndPoint}/{Id}", color);
+            NavigationManager.NavigateTo("/colors/");
         }
 
         public void Dispose()

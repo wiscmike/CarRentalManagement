@@ -25,11 +25,8 @@ namespace CarRentalManagement.Client.Pages.Colors
         private async Task CreateColor()
         {
             clientInterceptorService.MonitorEvent();
-            var result = await HttpClient.PostAsJsonAsync<Color>(EndPoints.ColorsEndPoint, color);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/colors/");
-            }
+            await HttpClient.PostAsJsonAsync<Color>(EndPoints.ColorsEndPoint, color);
+            NavigationManager.NavigateTo("/colors/");
         }
 
         public void Dispose()

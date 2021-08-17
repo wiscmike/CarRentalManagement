@@ -25,11 +25,8 @@ namespace CarRentalManagement.Client.Pages.Customers
         private async Task CreateCustomer()
         {
             clientInterceptorService.MonitorEvent();
-            var result = await HttpClient.PostAsJsonAsync<Customer>(EndPoints.CustomersEndPoint, customer);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/customers/");
-            }
+            await HttpClient.PostAsJsonAsync<Customer>(EndPoints.CustomersEndPoint, customer);
+            NavigationManager.NavigateTo("/customers/");
         }
 
         public void Dispose()

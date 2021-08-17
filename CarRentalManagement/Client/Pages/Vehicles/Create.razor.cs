@@ -37,11 +37,8 @@ namespace CarRentalManagement.Client.Pages.Vehicles
 
         private async Task CreateVehicle()
         {
-            var result = await HttpClient.PostAsJsonAsync<Vehicle>(EndPoints.VehiclesEndPoint, vehicle);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/vehicles/");
-            }
+            await HttpClient.PostAsJsonAsync<Vehicle>(EndPoints.VehiclesEndPoint, vehicle);
+            NavigationManager.NavigateTo("/vehicles/");
         }
 
         public void Dispose()

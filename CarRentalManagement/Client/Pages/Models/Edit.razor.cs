@@ -33,11 +33,8 @@ namespace CarRentalManagement.Client.Pages.Models
 
         private async Task EditModel()
         {
-            var result = await HttpClient.PutAsJsonAsync($"{EndPoints.ModelsEndPoint}/{Id}", model);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                NavigationManager.NavigateTo("/models/");
-            }
+            await HttpClient.PutAsJsonAsync($"{EndPoints.ModelsEndPoint}/{Id}", model);
+            NavigationManager.NavigateTo("/models/");
         }
 
         public void Dispose()
