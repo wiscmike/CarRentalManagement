@@ -19,6 +19,9 @@ namespace CarRentalManagement.Client.Pages.Vehicles
         [Parameter] 
         public bool Disabled { get; set; } = false;
 
+        [Parameter]
+        public bool DisabledForEdit { get; set; } = false;
+
         [Parameter] 
         public Vehicle vehicle { get; set; }
 

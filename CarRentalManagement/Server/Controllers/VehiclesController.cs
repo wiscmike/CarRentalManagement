@@ -55,6 +55,22 @@ namespace CarRentalManagement.Server.Controllers
             return NotFound($"Vehicle Id {id} not found.");
         }
 
+        // GET: /Vehicles/5
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetVehicleDetails(int id)
+        {
+            // List<string> includes = new List<string> { "Make", "Model", "Color" };
+
+            //var Vehicle = await _unitOfWork.VehiclesRepository.Get(m => m.Id == id, includes: includes);
+
+            var Vehicle = await _unitOfWork.VehiclesRepository.Get(m => m.Id == id, includes: v => v.Include(x => x.Make ).Include(x => x.Model).Include(x => x.Color));
+
+            if (Vehicle != null)
+            {
+                return Ok(Vehicle);
+            }
+            return NotFound($"Vehicle Id {id} not found.");
+        }
         // PUT: /Vehicles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

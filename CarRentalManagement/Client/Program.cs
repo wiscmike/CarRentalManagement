@@ -1,3 +1,4 @@
+using CarRentalManagement.Client.Contracts;
 using CarRentalManagement.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -31,6 +32,10 @@ namespace CarRentalManagement.Client
             builder.Services.AddHttpClientInterceptor();
             // add the custom interceptor class
             builder.Services.AddScoped<HttpClientInterceptorService>();
+            // object will be created each time it is used (and then destroyed).
+            // Note: this needs to come after the HttpClient and Interceptor creations
+            // since it uses both (injected into ctor).
+            builder.Services.AddTransient(typeof(IHttpRepository<>), typeof(HttpRepository<>));
 
             builder.Services.AddApiAuthorization();
 

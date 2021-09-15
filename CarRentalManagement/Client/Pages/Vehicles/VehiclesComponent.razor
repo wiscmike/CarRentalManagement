@@ -12,7 +12,7 @@
                 <div class="form-group">
                     <label>Make:</label>
                     <div>
-                        <select @bind="vehicle.MakeId" class="form-control">
+                        <select @bind="vehicle.MakeId" class="form-control" disabled="@DisabledForEdit">
                             @if (Makes != null)
                             {
                                 <option value="">-- Select Make --</option>
@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <label>Model:</label>
                     <div>
-                        <InputSelect @bind-Value="vehicle.ModelId" class="form-control">
+                        <InputSelect @bind-Value="vehicle.ModelId" class="form-control" disabled="@DisabledForEdit">
                             @if (Makes != null)
                             {
                                 <option value="">-- Select Model --</option>

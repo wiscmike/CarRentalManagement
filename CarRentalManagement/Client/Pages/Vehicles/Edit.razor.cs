@@ -28,7 +28,7 @@ namespace CarRentalManagement.Client.Pages.Vehicles
         protected async override Task OnParametersSetAsync()
         {
             clientInterceptorService.MonitorEvent();
-            vehicle = await HttpClient.GetFromJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}/{Id}");
+            vehicle = await HttpClient.GetFromJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}/{Id}/details");
         }
 
         private async Task EditVehicle()

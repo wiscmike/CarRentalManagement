@@ -1,6 +1,7 @@
 ﻿using CarRentalManagement.Server.Data;
 using CarRentalManagement.Server.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,13 @@ namespace CarRentalManagement.Server.Repository
             _dbSet.RemoveRange(entities);
         }
 
+        public async Task<T> Get(Expression<Func<T, bool>> expression)
+        {
+            IQueryable<T> query = _dbSet;
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(expression);
+        }
+
         public async Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null)
         {
             IQueryable<T> query = _dbSet;
@@ -44,6 +52,18 @@ namespace CarRentalManagement.Server.Repository
                 {
                     query = query.Include(prop);
                 }
+            }
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(expression);
+        }
+
+        public async Task<T> Get(Expression<Func<T, bool>> expression, Func<IQueryable<T>, IIncludableQueryable<T, object>> includes = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (includes != null)
+            {
+                query = includes(query);
             }
 
             return await query.AsNoTracking().FirstOrDefaultAsync(expression);
